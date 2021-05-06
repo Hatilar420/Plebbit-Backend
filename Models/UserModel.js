@@ -1,24 +1,28 @@
 const mongoose  =  require('mongoose');
 const jwtService = require('../Services/JwtTokenService')
+const bcrypt = require('bcrypt');
+var uniqueValidator = require('mongoose-unique-validator');
 const {Schema} =  mongoose
 
 let userSchema = new Schema({
     Username : {
         type : String,
-        require : true
+        required : true,
+        unique : true
     },
     Password : {
         type : String,
-        require:true    
+        required :true    
     }
 
 })
+userSchema.plugin(uniqueValidator)
 
-userSchema.method.GenrateJwt = async function(){
+userSchema.methods.GenrateJwt = async function(){
     let User = this
     try{
-        let tokengen =  await jwtService.SignToken(this._id)
-        console.log(tokengen)
+        let tokengen =  await jwtService.SignToken(User._id)
+        return tokengen
     }catch(exp){
         console.log(exp)
     }
@@ -26,9 +30,9 @@ userSchema.method.GenrateJwt = async function(){
 
 userSchema.pre("save", async function(next){
     const user = this
-    if(user.isModified('password')){
-        console.log(user.password)
-        user.password = await bcrypt.hash(user.password, 8)
+    if(user.isModified('Password')){
+        //console.log(user.Password)
+        user.Password = await bcrypt.hash(user.Password, 8)
     }
     next()
 } )

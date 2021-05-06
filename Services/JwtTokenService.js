@@ -16,16 +16,17 @@ class JwtToken {
 
    async SignToken(id){
        let payload = {}
-       if(id != null && id.length > 0){
-            payload._id = id
+       if(id != null && id.toString().length > 0){
+            payload._id = id.toString()
             if(this.expiry != null){
                 payload.exp = expiry
             }
-            return await jwt.sign(payload,this.Secret,{ algorithm: 'RS256'});
+            let token =  await jwt.sign(payload,this.Secret);
+            return token
        }
        return null
    } 
 
 }
 
-module.exports = new JwtToken("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+module.exports = new JwtToken(process.env.PRIVATE_KEY);
