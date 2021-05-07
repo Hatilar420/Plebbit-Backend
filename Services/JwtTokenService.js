@@ -27,6 +27,21 @@ class JwtToken {
        return null
    } 
 
+    VerifyToken(request){
+        let token  =  request.header('Authorization').replace("Bearer " , "")
+        console.log("Token:" + token)
+        try{
+            let decoded = jwt.verify(token,this.Secret)
+            console.log(decoded)
+            return {IsSuccess : true}
+        }catch(err){
+                return {IsSuccess : false , error : err }
+        }
+        
+        //let User = await user.findOne({"username":decoded.username})
+        //console.log(User)
+   }
+
 }
 
 module.exports = new JwtToken(process.env.PRIVATE_KEY);
