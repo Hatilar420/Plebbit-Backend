@@ -27,13 +27,13 @@ class JwtToken {
        return null
    } 
 
-    VerifyToken(request){
+    VerifyTokenAndGetId(request){
         let token  =  request.header('Authorization').replace("Bearer " , "")
         console.log("Token:" + token)
         try{
             let decoded = jwt.verify(token,this.Secret)
             console.log(decoded)
-            return {IsSuccess : true}
+            return {IsSuccess : true , _id : decoded._id}
         }catch(err){
                 return {IsSuccess : false , error : err }
         }

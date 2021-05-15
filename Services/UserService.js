@@ -17,7 +17,7 @@ class userServices{
                 IsSuccess : true
             }
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             return {
                 IsSuccess : false,
                 error : err
@@ -69,8 +69,21 @@ class userServices{
 
     }
 
-    VerifyUser = (req) =>{
-       return _JwtService.VerifyToken(req)    
+    VerifyUserAndGetUserAsync = async (req) =>{
+       var result = _JwtService.VerifyTokenAndGetId(req)
+       if(result.IsSuccess){
+            try {
+              let user = await _UserContext.findById(result._id)
+              return {IsSuccess : true , User  : user}                
+            } catch (error) {
+                return {IsSuccess : false , Error : error}
+            }         
+       }
+       return result  
+    }
+
+    VerifyToken = async(req) =>{
+        return _JwtService.VerifyTokenAndGetId(req)
     }
 
 }

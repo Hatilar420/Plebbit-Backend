@@ -2,6 +2,7 @@ const mongoose  =  require('mongoose');
 const jwtService = require('../Services/JwtTokenService')
 const bcrypt = require('bcrypt');
 var uniqueValidator = require('mongoose-unique-validator');
+const Emailvalidator = require("email-validator");
 const {Schema} =  mongoose
 
 let userSchema = new Schema({
@@ -13,6 +14,15 @@ let userSchema = new Schema({
     Password : {
         type : String,
         required :true    
+    },email:{
+        type:String,
+        required:true,
+        unique:true,
+        validate(value){
+            if(!Emailvalidator.validate(value)){
+                throw new Error("Email is not valid please check")
+            }
+        }
     }
 
 })
