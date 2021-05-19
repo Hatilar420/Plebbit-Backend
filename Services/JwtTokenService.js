@@ -28,7 +28,16 @@ class JwtToken {
    } 
 
     VerifyTokenAndGetId(request){
-        let token  =  request.header('Authorization').replace("Bearer " , "")
+        let AuthHeader  =  request.header('Authorization')
+        let token = ""
+        if(AuthHeader == null){
+            return{
+                IsSuccess : false,
+                error:"Authorization header not present"
+            }
+        }else{
+            token = AuthHeader.replace("Bearer " , "")
+        }
         console.log("Token:" + token)
         try{
             let decoded = jwt.verify(token,this.Secret)

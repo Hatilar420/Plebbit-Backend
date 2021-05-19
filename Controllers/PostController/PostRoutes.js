@@ -92,6 +92,22 @@ router.put('/:id',async(req,res) =>{
     res.status(200).send()*/
 })
 
+//Delete ENDPOINTS
+
+router.delete('/:id',async(req,res) =>{
+    let postId = req.params.id
+    let result = await _PostService.DeleteByIdAsync(postId)
+    if(result.IsSuccess){
+        res.status(200).send({
+            Deleted : `post/${postId}`
+        })
+    }else{
+        res.status(400).send(result.Errors)
+    }
+    /*console.log(postId)
+    res.status(200).send()*/
+})
+
 
 
 module.exports = router

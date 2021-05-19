@@ -7,6 +7,7 @@ const AuthJwt = async(req,res,next) =>{
        next()
    }
    else{
+    console.log(result.error)
     res.status(401).send({
         message : "Jwt is not valid or user doesn't exist",
         error : result.Error 
