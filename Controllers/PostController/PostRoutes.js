@@ -8,8 +8,9 @@ const PostDbContext = require('../../Models/PostModel.js')
 
 router.use(PostAuthMiddleware)
 const _PostService = new PostService(PostDbContext)
-//POST ENDPOINTS
 
+
+//POST ENDPOINTS
 
 router.post("/",async (req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
@@ -37,7 +38,6 @@ router.post("/",async (req,res) =>{
 })
 
 //GET ENDPOINTS
-
 
 router.get('/user',async (req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
