@@ -2,8 +2,12 @@ const _UserContext = require("../Models/UserModel")
 const _JwtService = require('./JwtTokenService')
 const bcrypt = require('bcrypt');
 //const UserFileUpload = require('./UserFileSaveService')
-
+const _postService = require('./PostService')
 class userServices{
+
+    constructor(){
+        this._PostService =  new _postService(_UserContext)
+    }
 
     AddUserAsync =  async(req,file) =>{
 
