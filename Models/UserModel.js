@@ -23,6 +23,8 @@ let userSchema = new Schema({
                 throw new Error("Email is not valid please check")
             }
         }
+    },imageUrl:{
+        type:String
     }
 
 })

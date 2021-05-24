@@ -1,12 +1,14 @@
 var multer  = require('multer')
+const { v4: uuidv4 } = require('uuid');
 // SET STORAGE
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads')
+      cb(null, 'uploads/UserAvatars')
     },
     filename: function (req, file, cb) {
-        file.mimetype
-      cb(null, file.fieldname + '-' + Date.now())
+      cb(null, uuidv4()+Date.now().toString()+'-'+file.originalname);
+
     }
   })
    

@@ -1,9 +1,10 @@
 const express =  require('express');
 const router = express.Router();
 const _UserService = require('../../Services/UserService.js')
+const UserUploadFile =  require('../../Services/UserFileSaveService')
 
-router.post('/register',async (req,res) =>{
-    let result = await _UserService.AddUserAsync(req.body)
+router.post('/register',UserUploadFile.single('avatar'),async (req,res) =>{
+    let result = await _UserService.AddUserAsync(req.body,req.file)
     if(result.IsSuccess)
     {
         res.status(201).send({

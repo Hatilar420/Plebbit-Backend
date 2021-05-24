@@ -1,16 +1,30 @@
 const _UserContext = require("../Models/UserModel")
 const _JwtService = require('./JwtTokenService')
 const bcrypt = require('bcrypt');
+//const UserFileUpload = require('./UserFileSaveService')
 
 class userServices{
 
-    AddUserAsync =  async(req) =>{
+    AddUserAsync =  async(req,file) =>{
 
         let newUser = new  _UserContext(req)
     
         try {
             let result = await newUser.save();
             let token  = await newUser.GenrateJwt();
+            //console.log(result)
+            //console.log(file)
+            if(file){
+                console.log("here")
+                //console.log(file)
+                let FileSaveResult = await this.UploadUserAvatarUrlAsync(file,result._id)
+                if(!FileSaveResult.IsSuccess){
+                    return{
+                        IsSuccess : false,
+                        error : FileSaveResult.error
+                    }
+                }
+            }
             console.log(result)
             return {
                 jwt : token,
@@ -22,11 +36,27 @@ class userServices{
                 IsSuccess : false,
                 error : err
             }
-        }
-    
-    
+        }    
     }
 
+    UploadUserAvatarUrlAsync = async(file,_id) =>{
+         console.log("level2")
+        if(file){
+            console.log(file.path)
+            console.log(_id)
+           let temp = await  _UserContext.findByIdAndUpdate(_id,{
+                $set:{imageUrl:file.path}
+            })
+            console.log(temp)
+            return {
+                IsSuccess : true
+            }
+        }
+        return {
+            IsSuccess : false,
+            error: "Image was not present" 
+        }
+    }
 
     LoginUserAsync = async(req) =>{
         let userName = req.body.Username
