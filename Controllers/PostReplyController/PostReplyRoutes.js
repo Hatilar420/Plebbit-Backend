@@ -39,6 +39,20 @@ router.post("/",async (req,res) =>{
 
 //GET ENDPOINTS
 
+router.get('/user',async (req,res) =>{
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
+    let GetPosts = await _PostReplyService.GetPostByUserId(userId)
+    if(GetPosts != null)
+    {
+        res.status(200).send(GetPosts)
+    }else{
+        res.statusCode(404).send()
+    }
+    //res.status(200).send();
+})
+
+
 router.get('/:Postid', async(req,res) =>{
     let GetPost = await _PostReplyService.GetPostRepliesByPostIdAsync(req.params.Postid)
     if(GetPost != null)
@@ -51,20 +65,7 @@ router.get('/:Postid', async(req,res) =>{
 } )
 
 
-router.get('/user',async (req,res) =>{
-    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
-    let userId =  JwtDecodeResult.User._id
-    console.log(userId)
-    let GetPosts = await _PostReplyService.GetPostByUserId(userId)
-    console.log(GetPosts)
-    if(GetPosts != null)
-    {
-        res.status(200).send(GetPosts)
-    }else{
-        res.statusCode(404).send()
-    }
-    //res.status(200).send();
-})
+
 
 
 // 's' here stands for single
@@ -83,10 +84,12 @@ router.get('/s/:id', async(req,res) =>{
 
 router.put('/s/:id',async(req,res) =>{
     let postId = req.params.id
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
     let temp = {
         Content : req.body.Content
     }
-    let result = await _PostReplyService.UpdatePostAsync(temp,postId)
+    let result = await _PostReplyService.UpdatePostAsync(temp,postId,userId)
     if(result.IsSuccess){
         res.status(200).send({
             Route : `reply/s/${postId}`
@@ -101,7 +104,9 @@ router.put('/s/:id',async(req,res) =>{
 
 router.delete('/s/:id',async(req,res) =>{
     let postId = req.params.id
-    let result = await _PostReplyService.DeleteByIdAsync(postId)
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
+    let result = await _PostReplyService.DeleteByIdAsync(postId,userId)
     if(result.IsSuccess){
         res.status(200).send({
             Deleted : `reply/s/${postId}`

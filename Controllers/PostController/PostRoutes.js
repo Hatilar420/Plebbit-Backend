@@ -80,7 +80,9 @@ router.get('/',async (req,res) =>{
 
 router.put('/:id',async(req,res) =>{
     let postId = req.params.id
-    let result = await _PostService.UpdatePostAsync(req.body,postId)
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
+    let result = await _PostService.UpdatePostAsync(req.body,postId,userId)
     if(result.IsSuccess){
         res.status(200).send({
             Route : `post/${postId}`
@@ -96,12 +98,16 @@ router.put('/:id',async(req,res) =>{
 //To Do only User owning it should be able to delete
 router.delete('/:id',async(req,res) =>{
     let postId = req.params.id
-    let result = await _PostService.DeleteByIdAsync(postId)
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
+    let result = await _PostService.DeleteByIdAsync(postId,userId)
+    console.log(result)
     if(result.IsSuccess){
         res.status(200).send({
             Deleted : `post/${postId}`
         })
     }else{
+
         res.status(400).send(result.Errors)
     }
     /*console.log(postId)

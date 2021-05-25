@@ -43,7 +43,7 @@ class PostService {
 
     //To Do Only Authorized user are able to update the post
     //Update operations
-    UpdatePostAsync = async(req,id) =>{
+    UpdatePostAsync = async(req,id,UserId) =>{
         let PostId = id;
         //console.log(PostId)
         //One can easily Insert objects here
@@ -54,11 +54,25 @@ class PostService {
         //console.log(req)
 
         try {
-            var result = await this._PostContext.findByIdAndUpdate(PostId,{
-                $set : req
-            })
+            let post = await this.GetPostbyIdAsync(PostId)
+            console.log(post)
+            if(post != null)
+            {
+                console.log(post.UserId)
+                console.log(UserId)
+                if(post.UserId == UserId){
+                    console.log("here")
+                    await this._PostContext.findByIdAndUpdate(PostId,{
+                        $set : req
+                    })
+                    return {IsSuccess : true}
+                }
+                else return {IsSuccess : false , Errors:"User Not Auth" , Code : 403 }
+            }
+            else{
+                return {IsSuccess : false,Errors:"post not found"}
+            }
             //console.log(result)
-            return {IsSuccess : true}
         } catch (error) {
             return {isSuccess : false,Errors : error}
         }
@@ -66,12 +80,21 @@ class PostService {
     }
 
     //DeleteOperations
-    DeleteByIdAsync = async(_id) =>{
+    DeleteByIdAsync = async(_id,UserId) =>{
         try {
-            let result = await this._PostContext.deleteOne({_id});
-            console.log(result)
-            return {IsSuccess : true}
+            let post = await this.GetPostbyIdAsync(_id)
+            console.log(post)
+            if(post != null){
+                if(post.UserId == UserId){
+                    let result = await this._PostContext.deleteOne({_id});
+                    console.log(result)
+                    return {IsSuccess : true}       
+                }
+                else return {IsSuccess : false , Errors:"User Not Auth" , Code : 403 }
+            }
+            else return {isSuccess : false , Errors : "post not found"}
         } catch (error) {
+
             return {isSuccess : false,Errors : error}
         }
         
