@@ -1,12 +1,7 @@
 const mongoose  =  require('mongoose');
 const {Schema} =  mongoose
 
-let PostSchema = new Schema({
-    Title : {
-        type : String,
-        required : true,
-        //unique : true
-    },
+let PostReplySchema = new Schema({
     Content : {
         type : String,
         required :true    
@@ -15,6 +10,10 @@ let PostSchema = new Schema({
         type : String,
         required : true
     },
+    PostId:{
+        type: String,
+        required: true
+    },
     CreationDate:{
         type : Date,
         default : Date.now()
@@ -22,6 +21,6 @@ let PostSchema = new Schema({
 
 })
 
-let PostModel =  mongoose.model("Post",PostSchema);
+let PostReplyModel =  mongoose.model("PostReply",PostReplySchema);
 
-module.exports =  PostModel
+module.exports =  PostReplyModel

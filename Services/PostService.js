@@ -19,7 +19,11 @@ class PostService {
 
     GetPostByUserId = async (_UserId) =>{
         return await this._PostContext.find({UserId:_UserId}) 
-    }    
+    }
+    
+    GetPostRepliesByPostIdAsync = async(_PostId) =>{
+        return await this._PostContext.find({PostId:_PostId})
+    }
 
     //Create operations
     CreatePostFromRequestAsync = async (req,_UserId) =>{
@@ -37,6 +41,7 @@ class PostService {
     }
 
 
+    //To Do Only Authorized user are able to update the post
     //Update operations
     UpdatePostAsync = async(req,id) =>{
         let PostId = id;
