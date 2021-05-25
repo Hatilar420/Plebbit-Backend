@@ -18,6 +18,8 @@ let PostSchema = new Schema({
     CreationDate:{
         type : Date,
         default : Date.now()
+    },imageUrl:{
+        type:String
     }    
 
 })

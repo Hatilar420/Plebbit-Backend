@@ -4,6 +4,7 @@ const _UserService = require("../../Services/UserService.js")
 const PostService = require("../../Services/PostService")
 const PostAuthMiddleware =  require('./AuthMiddleware.js');
 const PostDbContext = require('../../Models/PostModel.js')
+const PostUploadFile =  require('../../Services/PostFileSaveService')
 //const { GetPostbyIdAsync } = require('../../Services/PostService');
 
 router.use(PostAuthMiddleware)
@@ -17,6 +18,31 @@ router.post("/",async (req,res) =>{
     let userId =  JwtDecodeResult.User._id
     try{
         let result = await _PostService.CreatePostFromRequestAsync(req.body,userId)
+        console.log(result)
+        if(result.IsSuccess){
+            res.status(201).send({
+                CreatedRoute : `post/${result.user._id}`
+            })
+        }
+        else{
+            res.status(400).send({
+                error : result.Error
+            })
+        }
+    }catch(err){
+            console.log(err)
+            res.status(500).send({
+                error : err  
+            })
+    }
+
+})
+
+router.post("/p/",PostUploadFile.single('image'),async (req,res) =>{
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
+    try{
+        let result = await _PostService.CreatePostWithImageAsync(req.body,req.file,userId)
         console.log(result)
         if(result.IsSuccess){
             res.status(201).send({

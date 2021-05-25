@@ -40,6 +40,34 @@ class PostService {
 
     }
 
+    CreatePostWithImageAsync = async (req,file,_UserId) =>{
+        if(file){
+            console.log(file.path)
+            req.imageUrl = file.path
+            return await this.CreatePostFromRequestAsync(req,_UserId)
+        }
+        return {IsSuccess:false , Errors : "Image was not present"}
+    }
+
+    /*UploadPostAsync = async(file,_id) =>{
+        console.log("level2")
+       if(file){
+           console.log(file.path)
+           console.log(_id)
+          let temp = await  this._PostContext.findByIdAndUpdate(_id,{
+               $set:{imageUrl:file.path}
+           })
+           console.log(temp)
+           return {
+               IsSuccess : true
+           }
+       }
+       return {
+           IsSuccess : false,
+           error: "Image was not present" 
+       }
+   }*/
+
 
     //To Do Only Authorized user are able to update the post
     //Update operations
