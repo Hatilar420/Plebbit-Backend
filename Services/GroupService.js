@@ -39,11 +39,39 @@ class GroupService {
     
 
     //Exclusive Admin operations
+    AssignRoleAsync = async (_OwnerId,_Gid,_UserId,_role) =>{
+        let groupResult = await _PostService.GetPostbyIdAsync(_Gid)
+        if(groupResult.IsSuccess){
+            //If owner id is equal to userid then proceed to update
+            if(_OwnerId == _UserId){
+                let groupMap = await _GroupMapService.GetGroupMapAsync(_UserId,_Gid)
+                console.log(groupMap)
+                if(groupMap != null){
+                    let gmapId = groupMap._id;
+                    let obj ={
+                        role : _role
+                    }
+                    let updateResult = await _GroupMapService.UpdateGroupMapAsync(gmapId,obj)
+                    if(updateResult.IsSuccess){
+                        return {IsSuccess : true , gmap : groupMap }
+                    }else{
+                        return updateResult
+                    }                             
 
+                }else{
+                    return {IsSuccess : false , Error : "Map not found"}
+                }
+            }else{
+                return {IsSuccess : false , StatusCode : 401 , Error : "User is not auth" }
+            }
+        }else
+        {
+            return groupResult
+        }
+    }
 
 
     //Exclusive Admin and Moderator operations
-
 
 
     //User,Admins and mod operations

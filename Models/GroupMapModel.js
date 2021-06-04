@@ -20,3 +20,8 @@ let GroupMapSchema = new Schema({
     }
 
 })
+
+
+let groupMapModel =  mongoose.model("GroupMap",userSchema);
+
+module.exports = groupMapModel
