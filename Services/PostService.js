@@ -20,6 +20,10 @@ class PostService {
     GetPostByUserId = async (_UserId) =>{
         return await this._PostContext.find({UserId:_UserId}) 
     }
+
+    GetPostByGroupId = async (_GroupId) =>{
+        return await this._PostContext.find({GroupId : _GroupId})
+    }
     
     GetPostRepliesByPostIdAsync = async(_PostId) =>{
         return await this._PostContext.find({PostId:_PostId})

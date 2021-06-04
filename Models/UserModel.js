@@ -25,7 +25,15 @@ let userSchema = new Schema({
         }
     },imageUrl:{
         type:String
-    }
+    },
+    Groups : [{
+        type : Schema.Types.ObjectId,
+        ref : "Group"
+    }],
+    OwnerGroup : [{
+        type : Schema.Types.ObjectId,
+        ref:  "Group"
+    }]
 
 })
 userSchema.plugin(uniqueValidator)

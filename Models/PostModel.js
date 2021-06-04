@@ -20,8 +20,11 @@ let PostSchema = new Schema({
         default : Date.now()
     },imageUrl:{
         type:String
+    },
+    GroupId: {
+        type : Schema.Types.ObjectId,
+        ref : "Group"
     }    
-
 })
 
 let PostModel =  mongoose.model("Post",PostSchema);
