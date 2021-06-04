@@ -6,16 +6,18 @@ let GroupSchema = new Schema({
         type: String,
         required : true
     },
+    //Information of owner
     UserId : {
         type : Schema.Types.ObjectId,
-        ref : "UserIdentity"
+        ref : "UserIdentity",
+        required:true
     },
     TimeCreated : {
         default : Date.now()
     },
     Users : [{
         type : Schema.Types.ObjectId,
-        ref : "UserIdentity"
+        ref : "GroupMap"
     }],
     Words : [{
         type:String

@@ -26,9 +26,10 @@ let userSchema = new Schema({
     },imageUrl:{
         type:String
     },
+    //To find Which groups it is linked to
     Groups : [{
         type : Schema.Types.ObjectId,
-        ref : "Group"
+        ref : "GroupMap"
     }],
     OwnerGroup : [{
         type : Schema.Types.ObjectId,
