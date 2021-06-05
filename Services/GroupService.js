@@ -7,6 +7,15 @@ const _GroupMapService = new GroupMapService()
 
 class GroupService {
 
+
+    GetRoleOfUser = async (_GroupId,_UserId) =>{
+        let result = await _GroupMapService.GetGroupMapAsync(_UserId , _GroupId)
+        if(result){
+            return {IsSuccess : true , role : result.role}
+        }else{
+            return {IsSuccess : false , Error:"Not found"}
+        }
+    }
     //Common Operations
     //Will be present in post service
     CreateGroupAsync = async (req,_UserId) =>{
@@ -71,8 +80,41 @@ class GroupService {
     }
 
 
-    //Exclusive Admin and Moderator operations
+    RemoveUserAsync = async (_OwnerId , _GroupId, _UserId ) =>{
+        let groupResult = await _GroupMapService.GetGroupMapAsync(_OwnerId , _GroupId)
+        if(groupResult.role == "ADMIN" || groupResult.role == "MOD"){
+            let result  = await _GroupMapService.DeleteGroupMapAsync(_GroupId,_UserId)
+            return result               
 
+        }else
+        {
+            return {IsSuccess : false , Error : "UnAuthorized", StatusCode:401}
+        }
+    }
+
+    AddWordsAsync = async(_OwnerId , _GroupId ,words ) =>{
+        let Role =  await this.GetRoleOfUser(_GroupId,_OwnerId)
+        if(role.IsSuccess){
+            let role = Role.role
+            if(role == "ADMIN" || role == "MOD"){
+                let grp = await _PostService.GetPostbyIdAsync(_GroupId)
+                grp.push(words)
+                try{
+                     await GroupContext.findByIdAndUpdate(_GroupId,{
+                        $set : grp
+                    })
+                    return {IsSuccess : true}
+                }catch(error){
+                    return {IsSuccess : false , Error : error }
+                }
+            }
+            else{
+                return {IsSuccess : false , StatusCode : 401 , Error : "User not Authorized"}
+            }
+        }else{
+            return Role
+        }
+    }
 
     //User,Admins and mod operations
 }

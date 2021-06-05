@@ -6,12 +6,12 @@ class GroupMapService {
 
     //Read operation
 
-    GetGroupMapAsync = (_UserId,_GroupId) =>{
+    GetGroupMapAsync = async (_UserId,_GroupId) =>{
         let arr = await GroupMapContext.findOne({UserId:_UserId,GroupId:_GroupId})
         return arr[0]       
     }
 
-    GetGroupByIdAsync = (gmapId) => {
+    GetGroupByIdAsync = async (gmapId) => {
         return await GroupMapContext.findById(gmapId)
     }
 
@@ -40,6 +40,22 @@ class GroupMapService {
             }catch(error){
                 return {IsSuccess : false,Error:error}
             }
+    }
+
+    DeleteGroupMapAsync = async (Gid,_UserId) =>{
+        let gmap =  await this.GetGroupMapAsync(_UserId,Gid)
+        try{
+            if(gmap){
+                let _id = gmap._id
+                let result = await GroupMapContext.deleteOne({_id})
+                console.log(result)
+                return {IsSuccess : true}
+            }else{
+              return {IsSuccess : false , Error: "Map not found"}   
+            } 
+        }catch(error){
+            return {IsSuccess : false , Error : error}
+        }        
     }
 
 }
