@@ -1,14 +1,12 @@
 const PostService = require('./PostService')
 const GroupContext = require('../Models/GroupModel') 
 const _PostService = new PostService(GroupContext)
-const GroupMapService = require('./GroupMapService')
-
-const _GroupMapService = new GroupMapService()
+const _GroupMapService = require('./GroupMapService')
 
 class GroupService {
 
 
-    GetRoleOfUser = async (_GroupId,_UserId) =>{
+    GetRoleOfUserAsync = async (_GroupId,_UserId) =>{
         let result = await _GroupMapService.GetGroupMapAsync(_UserId , _GroupId)
         if(result){
             return {IsSuccess : true , role : result.role}
@@ -21,7 +19,7 @@ class GroupService {
     CreateGroupAsync = async (req,_UserId) =>{
         let CreateGroupResult = await _PostService.CreatePostFromRequestAsync(req,_UserId)
         if(CreateGroupResult.IsSuccess){
-            let gid = result.user._id
+            let gid = CreateGroupResult.user._id
             let MapResult = await _GroupMapService.CreateGroupMapAsync(_UserId,gid,"ADMIN")
             if(MapResult.IsSuccess)
             {
@@ -120,4 +118,4 @@ class GroupService {
 }
 
 
-module.exports = GroupService 
+module.exports = new GroupService() 

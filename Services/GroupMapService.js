@@ -1,4 +1,5 @@
 const GroupMapContext = require('../Models/GroupMapModel')
+const GroupContext = require('../Models/GroupModel')
 
 class GroupMapService {
 
@@ -8,7 +9,7 @@ class GroupMapService {
 
     GetGroupMapAsync = async (_UserId,_GroupId) =>{
         let arr = await GroupMapContext.findOne({UserId:_UserId,GroupId:_GroupId})
-        return arr[0]       
+        return arr       
     }
 
     GetGroupByIdAsync = async (gmapId) => {
@@ -60,4 +61,4 @@ class GroupMapService {
 
 }
 
-module.exports = GroupMapService
+module.exports = new  GroupMapService()

@@ -5,6 +5,7 @@ const PostService = require("../../Services/PostService")
 const PostAuthMiddleware =  require('./AuthMiddleware.js');
 const PostDbContext = require('../../Models/PostModel.js')
 const PostUploadFile =  require('../../Services/PostFileSaveService')
+const CheckGroupMiddleware = require('./AuthGroupCheck')
 //const { GetPostbyIdAsync } = require('../../Services/PostService');
 
 router.use(PostAuthMiddleware)
@@ -13,7 +14,7 @@ const _PostService = new PostService(PostDbContext)
 
 //POST ENDPOINTS
 
-router.post("/",async (req,res) =>{
+router.post("/",CheckGroupMiddleware,async (req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
     let userId =  JwtDecodeResult.User._id
     try{
@@ -38,7 +39,7 @@ router.post("/",async (req,res) =>{
 
 })
 
-router.post("/p/",PostUploadFile.single('image'),async (req,res) =>{
+router.post("/p/",CheckGroupMiddleware,PostUploadFile.single('image'),async (req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
     let userId =  JwtDecodeResult.User._id
     try{
@@ -91,8 +92,8 @@ router.get('/:id', async(req,res) =>{
      
 } )
 
-router.get('/',async (req,res) =>{
-    let GetPosts = await _PostService.GetAllPostAsync()
+router.get('/g/:gid',async (req,res) =>{
+    let GetPosts = await _PostService.GetPostByGroupId(req.params.gid)
     if(GetPosts != null)
     {
         res.status(200).send(GetPosts)

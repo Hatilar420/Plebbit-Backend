@@ -5,6 +5,7 @@ const RegisterLoginRoute = require('./Controllers/LogInAndRegister/LoginAndRegis
 const PostRoute = require('./Controllers/PostController/PostRoutes')
 const UserRoutes = require('./Controllers/UserController/userRoutes')
 const PostReplyRoutes = require('./Controllers/PostReplyController/PostReplyRoutes')
+const GroupRoutes = require('./Controllers/GroupControllers/GroupRoutes')
 const app =  express();
 const port =  8080
 
@@ -14,6 +15,7 @@ app.use(RegisterLoginRoute)
 app.use("/post",PostRoute)
 app.use('/user',UserRoutes)
 app.use('/reply',PostReplyRoutes)
+app.use('/group',GroupRoutes)
 
 
 app.listen(port , () => {

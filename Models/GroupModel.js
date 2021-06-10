@@ -13,21 +13,14 @@ let GroupSchema = new Schema({
         required:true
     },
     TimeCreated : {
+        type:Date,
         default : Date.now()
     },
-    Users : [{
-        type : Schema.Types.ObjectId,
-        ref : "GroupMap"
-    }],
     Words : [{
         type:String
-    }],
-    Posts : [{
-        type:Schema.Types.ObjectId,
-        ref : "Post"
     }]
 })
 
-let groupModel =  mongoose.model("Group",userSchema);
+let groupModel =  mongoose.model("Group",GroupSchema);
 
 module.exports = groupModel

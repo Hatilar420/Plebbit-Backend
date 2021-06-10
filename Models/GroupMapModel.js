@@ -22,6 +22,6 @@ let GroupMapSchema = new Schema({
 })
 
 
-let groupMapModel =  mongoose.model("GroupMap",userSchema);
+let groupMapModel =  mongoose.model("GroupMap",GroupMapSchema);
 
 module.exports = groupMapModel

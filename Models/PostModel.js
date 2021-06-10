@@ -23,6 +23,7 @@ let PostSchema = new Schema({
     },
     GroupId: {
         type : Schema.Types.ObjectId,
+        required:"true",
         ref : "Group"
     }    
 })
