@@ -22,19 +22,21 @@ class GroupMapService {
             GroupId : _GroupId,
             role : Role
         }
+        let existMap = await this.GetGroupMapAsync(_UserId,_GroupId)
+        if(existMap != null) return {IsSuccess:false , StatusCode:"403" ,Error:"Already exists"}
         let req = GroupMapContext(obj)
         try{
             let result = await req.save()
             console.log(result)
             return {IsSuccess : true, GroupMap : result }
         }catch(error){
-                return {IsSuccess : false , Error :error}
+                return {IsSuccess : false ,StatusCode:"500" ,Error :error}
         }
     }
 
     UpdateGroupMapAsync = async (_GroupMapId , req) =>{
             try {
-                GroupMapContext.findByIdAndUpdate(_GroupMapId,{
+                await GroupMapContext.findByIdAndUpdate(_GroupMapId,{
                     $set : req 
                 })
                 return {IsSuccess : true}

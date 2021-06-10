@@ -32,6 +32,7 @@ router.get('/:id',async(req,res) =>{
 //THIS IS TEMPORARY
 router.get('/join/:gid',async(req,res) =>{
     let Gid = req.params.gid
+    console.log(Gid)
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
     let userId =  JwtDecodeResult.User._id
     let result = await _GroupService.JoinGroupAsync(userId,Gid)
@@ -39,6 +40,16 @@ router.get('/join/:gid',async(req,res) =>{
         res.status(200).send(result.Group)
     }
     else{
+        if(result.StatusCode  == 403) {
+            res.status(403).send('forbidden >_<')
+            return
+        }
+        if(result.StatusCode == 500) {
+            res.status(500).send(result.Error)
+            return
+        }
+        if(result.StatusCode == 404) {res.status(404).send("Not Found")
+        return}
         res.status(500).send(result.Error)
     }
 })

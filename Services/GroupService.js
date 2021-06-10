@@ -35,12 +35,18 @@ class GroupService {
     }
 
     JoinGroupAsync = async (_UserId,_GroupId) =>{
-        let MapResult = await _GroupMapService.CreateGroupMapAsync(_UserId,_GroupId,"USER")
-        if(MapResult.IsSuccess){
-            let groupResult = await _PostService.GetPostbyIdAsync(gid)
-            return {IsSuccess : true,Group : groupResult}
-        }else{
-            return {IsSuccess : false , Error : MapResult.Error}
+        try{
+            let group = await _PostService.GetPostbyIdAsync(_GroupId)
+            if(group == null) return {IsSuccess : false , StatusCode : 404 , Error : "Group Not found"}
+            let MapResult = await _GroupMapService.CreateGroupMapAsync(_UserId,_GroupId,"USER")
+            if(MapResult.IsSuccess){
+                let groupResult = await _PostService.GetPostbyIdAsync(_GroupId)
+                return {IsSuccess : true,Group : groupResult}
+            }else{
+                return MapResult
+            }
+        }catch(error){
+            return {IsSuccess : false , StatusCode: 500 , Error : error}
         }
     }
     
@@ -48,17 +54,13 @@ class GroupService {
     //Exclusive Admin operations
     AssignRoleAsync = async (_OwnerId,_Gid,_UserId,_role) =>{
         let groupResult = await _PostService.GetPostbyIdAsync(_Gid)
-        if(groupResult.IsSuccess){
-            //If owner id is equal to userid then proceed to update
-            if(_OwnerId == _UserId){
+        if(groupResult != null){
                 let groupMap = await _GroupMapService.GetGroupMapAsync(_UserId,_Gid)
                 console.log(groupMap)
                 if(groupMap != null){
                     let gmapId = groupMap._id;
-                    let obj ={
-                        role : _role
-                    }
-                    let updateResult = await _GroupMapService.UpdateGroupMapAsync(gmapId,obj)
+                    groupMap.role = _role 
+                    let updateResult = await _GroupMapService.UpdateGroupMapAsync(gmapId,groupMap)
                     if(updateResult.IsSuccess){
                         return {IsSuccess : true , gmap : groupMap }
                     }else{
@@ -68,9 +70,6 @@ class GroupService {
                 }else{
                     return {IsSuccess : false , Error : "Map not found"}
                 }
-            }else{
-                return {IsSuccess : false , StatusCode : 401 , Error : "User is not auth" }
-            }
         }else
         {
             return groupResult
@@ -91,12 +90,12 @@ class GroupService {
     }
 
     AddWordsAsync = async(_OwnerId , _GroupId ,words ) =>{
-        let Role =  await this.GetRoleOfUser(_GroupId,_OwnerId)
-        if(role.IsSuccess){
+        let Role =  await this.GetRoleOfUserAsync(_GroupId,_OwnerId)
+        if(Role.IsSuccess){
             let role = Role.role
             if(role == "ADMIN" || role == "MOD"){
                 let grp = await _PostService.GetPostbyIdAsync(_GroupId)
-                grp.push(words)
+                for(let i of words) grp.Words.push(i)
                 try{
                      await GroupContext.findByIdAndUpdate(_GroupId,{
                         $set : grp
