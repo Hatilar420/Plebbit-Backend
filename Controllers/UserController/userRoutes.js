@@ -17,7 +17,7 @@ router.get('/',async (req,res) =>{
     {
         let tempUser = {
             _id : JwtDecodeResult.User._id,
-            Username : JwtDecodeResult.User._id,
+            Username : JwtDecodeResult.User.Username,
             email : JwtDecodeResult.User.email,
             Avatar: JwtDecodeResult.User.imageUrl
         }
@@ -37,7 +37,7 @@ router.put('/',async (req,res) =>{
     {
         let tempUser = {
             _id : JwtDecodeResult.User._id,
-            Username : JwtDecodeResult.User._id,
+            Username : JwtDecodeResult.User.Username,
             email : JwtDecodeResult.User.email,
             Avatar: JwtDecodeResult.User.imageUrl
         }

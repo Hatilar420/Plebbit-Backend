@@ -46,8 +46,8 @@ class PostService {
 
     CreatePostWithImageAsync = async (req,file,_UserId) =>{
         if(file){
-            console.log(file.path)
-            req.imageUrl = file.path
+            req.imageUrl = '/Posts/' + `${file.filename}` 
+            console.log(req.imageUrl)
             return await this.CreatePostFromRequestAsync(req,_UserId)
         }
         return {IsSuccess:false , Errors : "Image was not present"}

@@ -7,7 +7,8 @@ const _GroupPostService = new _PostService(GroupDbContext)
 const _GroupService = require('../../Services/GroupService')
 const _GroupMapService =  require('../../Services/GroupMapService')
 const AuthMiddleware = require('../PostController/AuthMiddleware')
-const RoleAuthMiddleware = require('./GroupRouteRoleCheck')
+const RoleAuthMiddleware = require('./GroupRouteRoleCheck');
+const { GetRoleOfUserAsync } = require('../../Services/GroupService');
 
 router.get('/ping', (req,res) =>{
     res.status(200).send("pong")
@@ -18,6 +19,23 @@ router.get('/ping', (req,res) =>{
 router.use(AuthMiddleware)
 
 //Get Operations
+
+router.get('/',async (req,res) =>{
+    let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
+    let userId =  JwtDecodeResult.User._id
+    try{
+        let result  = await _GroupService.GetGroupsByUserAsync(userId)
+        if(result){
+            res.status(200).send(result)
+        }else{
+            res.status(400).send()
+        }
+    }catch(error){
+        res.status(500).send(error)
+    }
+
+})
+
 router.get('/:id',async(req,res) =>{
     let Gid = req.params.id
 

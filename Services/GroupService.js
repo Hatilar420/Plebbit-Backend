@@ -5,6 +5,10 @@ const _GroupMapService = require('./GroupMapService')
 
 class GroupService {
 
+    GetGroupsByUserAsync = async(_UserId) =>{
+        let result = await _GroupMapService.GetGroupMapByUserIdAsync(_UserId)
+        return result
+    }
 
     GetRoleOfUserAsync = async (_GroupId,_UserId) =>{
         let result = await _GroupMapService.GetGroupMapAsync(_UserId , _GroupId)

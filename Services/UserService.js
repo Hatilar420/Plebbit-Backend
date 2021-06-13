@@ -19,7 +19,6 @@ class userServices{
             //console.log(result)
             //console.log(file)
             if(file){
-                console.log("here")
                 //console.log(file)
                 let FileSaveResult = await this.UploadUserAvatarUrlAsync(file,result._id)
                 if(!FileSaveResult.IsSuccess){
@@ -44,12 +43,11 @@ class userServices{
     }
 
     UploadUserAvatarUrlAsync = async(file,_id) =>{
-         console.log("level2")
         if(file){
             console.log(file.path)
             console.log(_id)
            let temp = await  _UserContext.findByIdAndUpdate(_id,{
-                $set:{imageUrl:file.path}
+                $set:{imageUrl:`/UserAvatars/${file.filename}`}
             })
             console.log(temp)
             return {

@@ -39,7 +39,7 @@ router.post("/",CheckGroupMiddleware,async (req,res) =>{
 
 })
 
-router.post("/p/",CheckGroupMiddleware,PostUploadFile.single('image'),async (req,res) =>{
+router.post("/p/",PostUploadFile.single('image'),CheckGroupMiddleware,async (req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
     let userId =  JwtDecodeResult.User._id
     try{
