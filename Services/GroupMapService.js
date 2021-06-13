@@ -17,6 +17,11 @@ class GroupMapService {
         return arr
     }
 
+    GetGroupMapByGroupAsync = async (_gid) =>{
+        let arr = await GroupMapContext.find({GroupId : _gid}).populate("UserId")
+        return arr
+    }
+
     GetGroupByIdAsync = async (gmapId) => {
         return await GroupMapContext.findById(gmapId)
     }

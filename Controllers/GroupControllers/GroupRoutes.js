@@ -45,6 +45,15 @@ router.get('/:id',async(req,res) =>{
 
 })
 
+router.get('/users/:id' , async(req,res) =>{
+    let Gid = req.params.id
+
+    let result =  await _GroupService.GetUsersByGidAsync(Gid)
+    
+    res.status(200).send(result)
+
+} )
+
 
 //Implement Expire routes
 //THIS IS TEMPORARY

@@ -10,6 +10,11 @@ class GroupService {
         return result
     }
 
+    GetUsersByGidAsync = async (_gid) =>{
+        let result = await _GroupMapService.GetGroupMapByGroupAsync(_gid)
+        return result
+    }
+
     GetRoleOfUserAsync = async (_GroupId,_UserId) =>{
         let result = await _GroupMapService.GetGroupMapAsync(_UserId , _GroupId)
         if(result){
