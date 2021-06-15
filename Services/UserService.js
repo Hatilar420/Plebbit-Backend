@@ -9,6 +9,10 @@ class userServices{
         this._PostService =  new _postService(_UserContext)
     }
 
+    findUserByIdAsync = async(uid) =>{
+        return await  _UserContext.findById(uid)
+    }
+
     AddUserAsync =  async(req,file) =>{
 
         let newUser = new  _UserContext(req)

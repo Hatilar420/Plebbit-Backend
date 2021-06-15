@@ -28,6 +28,21 @@ router.get('/',async (req,res) =>{
     //res.status(200).send();
 })
 
+router.get('/:id', async (req, res) =>{
+    let user  = await _UserService.findUserByIdAsync(req.params.id)
+    if(user != null){
+        let tempUser = {
+            _id : user._id,
+            Username : user.Username,
+            email : user.email,
+            Avatar: user.imageUrl
+        }
+        res.status(200).send(tempUser)
+    }else{
+        res.status(400).send()
+    }
+})
+
 //Update Endpoints
 
 router.put('/',async (req,res) =>{
