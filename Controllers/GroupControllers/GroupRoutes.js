@@ -9,6 +9,7 @@ const _GroupMapService =  require('../../Services/GroupMapService')
 const AuthMiddleware = require('../PostController/AuthMiddleware')
 const RoleAuthMiddleware = require('./GroupRouteRoleCheck');
 const { GetRoleOfUserAsync } = require('../../Services/GroupService');
+const _gameService = require('../../Services/gameServices')
 
 router.get('/ping', (req,res) =>{
     res.status(200).send("pong")
@@ -54,6 +55,16 @@ router.get('/users/:id' , async(req,res) =>{
 
 } )
 
+router.get('/game/:gid',async(req,res) =>{
+    _gid = req.params.gid
+    let result = await _gameService.GetGamesByGroupId(_gid)
+    if(result != null){
+        res.status(200).send(result)
+    }
+    else{
+        res.status(400).send("Group not found")
+    }
+})
 
 //Implement Expire routes
 //THIS IS TEMPORARY
@@ -97,6 +108,27 @@ router.post('/',async (req,res) => {
         console.log(error)
         res.status(500).send(error)
     }
+})
+
+router.post('/game' , async(req,res) =>{
+    let body = {
+        GameOver:false,
+        GroupId : req.body.GroupId
+    }
+    try {
+        let result = await _gameService.CreateGameAsync(body)
+        if(result.IsSuccess){
+            res.status(200).send(result.Game._id)
+        }else{
+            console.log("")
+            res.status(400).send("Bad request")
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+
+
 })
 
 router.post('/role/assign',RoleAuthMiddleware,async (req,res) =>{

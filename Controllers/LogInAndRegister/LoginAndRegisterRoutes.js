@@ -12,6 +12,7 @@ router.post('/register',UserUploadFile.single('avatar'),async (req,res) =>{
         })
     }
     else{
+        console.log(result.error)
         res.status(400).send({
             error : result.error
         })

@@ -38,7 +38,11 @@ class JwtToken {
         }else{
             token = AuthHeader.replace("Bearer " , "")
         }
-        console.log("Token:" + token)
+        return this.VerifyTokenAndGetIdFromJwt(token)
+   }
+
+   VerifyTokenAndGetIdFromJwt(token){
+    console.log("Token:" + token)
         try{
             let decoded = jwt.verify(token,this.Secret)
             console.log(decoded)
@@ -46,10 +50,8 @@ class JwtToken {
         }catch(err){
                 return {IsSuccess : false , error : err }
         }
-        
-        //let User = await user.findOne({"username":decoded.username})
-        //console.log(User)
-   }
+
+}
 
 }
 

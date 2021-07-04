@@ -118,6 +118,19 @@ class userServices{
        return result  
     }
 
+    VerifyTokenAndGetUserFromToken = async (jwt) =>{
+        var result = _JwtService.VerifyTokenAndGetIdFromJwt(jwt)
+        if(result.IsSuccess){
+            try {
+              let user = await _UserContext.findById(result._id)
+              return {IsSuccess : true , User  : user}                
+            } catch (error) {
+                return {IsSuccess : false , Error : error}
+            }         
+       }
+       return result 
+    }
+
     VerifyToken = async(req) =>{
         return _JwtService.VerifyTokenAndGetId(req)
     }
