@@ -50,10 +50,14 @@ class gameScoreServices {
 
     GetGameScoreByGameId = async (_gameId) =>{
 
-        return await _gameScoreContext.find({GameId : _gameId })
+        return await _gameScoreContext.findOne({GameId : _gameId })
 
     }
 
+    GetGameScoreByGameAndGroupMap = async (_gameId , gMapId) =>{
+
+        return await _gameScoreContext.findOne({GameId : _gameId  , GroupMap : gMapId})
+    }
 
     GetGameScoreByGroupMapId = async (_gMapId) =>{
 

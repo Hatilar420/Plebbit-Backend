@@ -23,6 +23,16 @@ class GroupService {
             return {IsSuccess : false , Error:"Not found"}
         }
     }
+
+    GetUserMapAsync = async (_GroupId,_UserId) =>{
+        let result = await _GroupMapService.GetGroupMapAsync(_UserId , _GroupId)
+        if(result){
+            return {IsSuccess : true , map : result}
+        }else{
+            return {IsSuccess : false , Error:"Not found"}
+        }
+    }
+
     //Common Operations
     //Will be present in post service
     CreateGroupAsync = async (req,_UserId) =>{

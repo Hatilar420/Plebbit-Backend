@@ -6,6 +6,7 @@ const PostRoute = require('./Controllers/PostController/PostRoutes')
 const UserRoutes = require('./Controllers/UserController/userRoutes')
 const PostReplyRoutes = require('./Controllers/PostReplyController/PostReplyRoutes')
 const GroupRoutes = require('./Controllers/GroupControllers/GroupRoutes')
+const SocketHub = require('./Hubs/Sockets')
 const app =  express();
 const cors = require('cors')
 const port =  8080
@@ -30,7 +31,7 @@ io.use(SocketAuth)
 
 io.on("connection" , (socket) =>{
     console.log("connected" ,socket.id)
-    //io.emit("Loda","teri maa ki chut")
+    SocketHub(socket,io)
 })
 
 httpServer.listen(port , () =>{

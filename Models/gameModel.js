@@ -16,8 +16,11 @@ let GameModelSchema = new Schema({
     StartingTime:{
         type : Date,
         default : Date.now()
+    },
+    SelectedWord : {
+        type : String,
+        default : "temp"
     }
-
 })
 
 

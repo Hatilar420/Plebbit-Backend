@@ -1,4 +1,5 @@
 const _gameContext = require('../Models/gameModel')
+const _gameScoreService = require('./gameScoreServices')
 
 class gameServices {
 
@@ -40,7 +41,7 @@ class gameServices {
     
     //Get
 
-    GetGamesByGameId =  async (_id) =>{
+    GetGameByGameId =  async (_id) =>{
         return await _gameContext.findById(_id)
 
     }
@@ -49,6 +50,13 @@ class gameServices {
 
         return await _gameContext.find({GroupId : _gid })
 
+    }
+
+    //Manipulations
+
+    CheckGameWordAsync = async(_id , word) =>{
+        let game = await this.GetGameByGameId(_id)
+        return game.SelectedWord == word  
     }
 
 }
