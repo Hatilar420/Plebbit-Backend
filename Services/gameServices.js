@@ -52,12 +52,35 @@ class gameServices {
 
     }
 
+    GetPlayerTurn = async (GameId) =>{
+        let playerList =  await _gameScoreService.GetGameScoreByGameId(GameId)
+        let game  = await this.GetGameByGameId(GameId)
+        return playerList[game.SelectedPlayer]._id
+    }
+
     //Manipulations
 
-    CheckGameWordAsync = async(_id , word) =>{
+    CheckGameWordAsync = async(_id ,gameScoreId ,word) =>{
         let game = await this.GetGameByGameId(_id)
-        return game.SelectedWord == word  
+        console.log(gameScoreId,word)
+        if( game.SelectedWord == word)
+        {
+            let result = await _gameScoreService.UpdateScoreAsync(20,gameScoreId)
+            console.log(result)  
+        }
     }
+
+    UpdateTurnAsync = async (GameId) =>{
+       let playerList =  await _gameScoreService.GetGameScoreByGameId(GameId)
+       let game  = await this.GetGameByGameId(GameId)
+       let selected = (game.SelectedPlayer + 1) % (playerList.length)
+       game.SelectedPlayer = selected
+       await _gameContext.findByIdAndUpdate(GameId , {
+           $set : game
+       })
+       return playerList[selected]._id
+       
+    }    
 
 }
 

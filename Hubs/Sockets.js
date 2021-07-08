@@ -5,8 +5,8 @@ const SocketHub = (socket,io) =>{
 
 
     socket.on("join" , async({roomId,userMap}) =>{
-        console.log(roomId)
-        console.log(userMap)
+        //console.log(roomId)
+        //console.log(userMap)
         socket.join(roomId)
         let obj = {
           GameId : roomId,
@@ -14,19 +14,29 @@ const SocketHub = (socket,io) =>{
           Score : 0
         }
         let result = await _gameScoreServices.CreateGameAsync(obj)
-        io.to(roomId).emit("Joined",result.Game)
+        io.to(socket.id).emit("GameId" , result.Game)
+        io.to(socket.id).emit("turn" , {
+          Gameid : await  _gameService.GetPlayerTurn(roomId)
+        })
+        io.to(roomId).emit("Joined")
       })
 
-      socket.on("grp" , async ({gid , message}) =>{
-        console.log(message.Text,gid)
-        //also get GroupMap
 
-        if(await _gameService.CheckGameWordAsync(gid,message.Text)){
-          console.log("Nice")
-        }
+      socket.on("TimerUpdate" , ({Gid,timeLeft}) =>{
+          socket.to(Gid).emit("timer" ,{timeLeft})
+      })
+
+      socket.on("grp" , async ({gid , message,GameScoreId}) =>{
+        await _gameService.CheckGameWordAsync(gid,GameScoreId._id,message.Text)
         io.to(gid).emit("message" , {message})
       })
 
+      socket.on("updateTurn" , async ({GameID}) =>{
+          let result = await _gameService.UpdateTurnAsync(GameID)
+          io.to(GameID).emit("turn" , {
+            Gameid : result
+          })
+      })
 
       socket.on("painting" , ({gid,data}) =>{
           socket.to(gid).emit("canvasData" ,{data})

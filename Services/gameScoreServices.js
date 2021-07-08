@@ -4,10 +4,14 @@ const _gameScoreContext = require('../Models/gameScore')
 
 class gameScoreServices {
 
+
     //Create
 
     CreateGameAsync = async  (req) =>{
-
+        let chek = await this.GetGameScoreByGameAndGroupMap(req.GameId,req.GroupMap)
+        if(chek != null){
+            return {IsSuccess : true , Game : chek}
+        }
         let gameScoreMake =  _gameScoreContext(req)
         try {
             let result = await gameScoreMake.save() 
@@ -25,9 +29,9 @@ class gameScoreServices {
     UpdateScoreAsync = async (score,_id) =>{
 
         try {
-            let ScoreMod = _gameScoreContext.findById(_id)
+            let ScoreMod = await _gameScoreContext.findById(_id)
             if(ScoreMod){
-                ScoreMod.Score = score
+                ScoreMod.Score += score
                 await _gameScoreContext.findByIdAndUpdate(ScoreMod._id,{
                     $set : ScoreMod
                 })
@@ -50,7 +54,7 @@ class gameScoreServices {
 
     GetGameScoreByGameId = async (_gameId) =>{
 
-        return await _gameScoreContext.findOne({GameId : _gameId })
+        return await _gameScoreContext.find({GameId : _gameId })
 
     }
 

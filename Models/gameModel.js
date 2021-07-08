@@ -20,6 +20,10 @@ let GameModelSchema = new Schema({
     SelectedWord : {
         type : String,
         default : "temp"
+    },
+    SelectedPlayer : {
+        type:Number, 
+        default: 0
     }
 })
 
