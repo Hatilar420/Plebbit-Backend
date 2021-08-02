@@ -38,6 +38,34 @@ class gameServices {
            return {IsSuccess : false , Error : error }
        }
     }
+
+
+    UpdateTurnAsync = async (GameId) =>{
+        let playerList =  await _gameScoreService.GetGameScoreByGameId(GameId)
+        let game  = await this.GetGameByGameId(GameId)
+        let selected = (game.SelectedPlayer + 1) % (playerList.length)
+        game.SelectedPlayer = selected
+        await _gameContext.findByIdAndUpdate(GameId , {
+            $set : game
+        })
+        return playerList[selected]._id
+        
+     }
+
+
+     UpdateWordAsync = async (GameId,word) =>{
+         try{
+            let game  = await this.GetGameByGameId(GameId)
+            game.SelectedWord = word
+            await _gameContext.findByIdAndUpdate(GameId , {
+                $set : game
+            })
+            return GameId
+         }catch(error){
+             console.log(error)
+             return null
+         }
+     }
     
     //Get
 
@@ -68,18 +96,6 @@ class gameServices {
             let result = await _gameScoreService.UpdateScoreAsync(20,gameScoreId)
             console.log(result)  
         }
-    }
-
-    UpdateTurnAsync = async (GameId) =>{
-       let playerList =  await _gameScoreService.GetGameScoreByGameId(GameId)
-       let game  = await this.GetGameByGameId(GameId)
-       let selected = (game.SelectedPlayer + 1) % (playerList.length)
-       game.SelectedPlayer = selected
-       await _gameContext.findByIdAndUpdate(GameId , {
-           $set : game
-       })
-       return playerList[selected]._id
-       
     }    
 
 }

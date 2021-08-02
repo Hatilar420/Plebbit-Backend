@@ -3,7 +3,7 @@ const _gameService = require('../Services/gameServices')
 
 const SocketHub = (socket,io) =>{
 
-
+    //gid is roomId
     socket.on("join" , async({roomId,userMap}) =>{
         //console.log(roomId)
         //console.log(userMap)
@@ -41,6 +41,13 @@ const SocketHub = (socket,io) =>{
       socket.on("painting" , ({gid,data}) =>{
           socket.to(gid).emit("canvasData" ,{data})
       })
+
+      socket.on("UpdateWord", async ({gid,word}) =>{
+          let result = await _gameService.UpdateWordAsync(gid,word)
+          if(result !=  null){
+            socket.to(gid).emit("WordUpdate" , {word})
+          }
+      } )
 }
 
 module.exports = SocketHub 
