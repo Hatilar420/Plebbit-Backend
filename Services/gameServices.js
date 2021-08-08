@@ -1,5 +1,6 @@
 const _gameContext = require('../Models/gameModel')
 const _gameScoreService = require('./gameScoreServices')
+const _groupMapServices = require('./GroupMapService')
 
 class gameServices {
 
@@ -102,15 +103,45 @@ class gameServices {
         return result.GameOver
     }
 
+    GetGamePlayersAsync = async(GameId) =>{
+
+        let Players  = await _gameScoreService.GetGameScoreByGameId(GameId)
+        let GroupMaps = []
+        for(let x of Players){
+            let res =  await _groupMapServices.GetGroupByIdAsync(x.GroupMap)
+            //console.log(res.UserId)
+            let obj = {
+                GameScoreId : x._id ,
+                score:x.Score,
+                User:res.UserId
+            }
+            GroupMaps.push(obj)
+        }
+        //console.log(GroupMaps)
+        return GroupMaps
+    }
+
+    GetGamePlayerAsync = async(gMapId) =>{
+
+        let result = await _groupMapServices.GetGroupByIdAsync(gMapId)
+        //console.log(result.UserId)
+        return result.UserId
+
+    }
+
     //Manipulations
 
-    CheckGameWordAsync = async(_id ,gameScoreId ,word) =>{
+    CheckGameWordAsync = async(_id ,gameScoreId ,word,io) =>{
         let game = await this.GetGameByGameId(_id)
         console.log(gameScoreId,word)
         if( game.SelectedWord == word)
         {
             let result = await _gameScoreService.UpdateScoreAsync(20,gameScoreId)
-            console.log(result)  
+            io.to(_id).emit("score" , {
+                gameScoreId,
+                score:20
+            })
+            //console.log(result)  
         }
     }    
 

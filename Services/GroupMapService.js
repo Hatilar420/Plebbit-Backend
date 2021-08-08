@@ -23,7 +23,7 @@ class GroupMapService {
     }
 
     GetGroupByIdAsync = async (gmapId) => {
-        return await GroupMapContext.findById(gmapId)
+        return await GroupMapContext.findById(gmapId).populate("UserId")
     }
 
     CreateGroupMapAsync = async(_UserId,_GroupId,Role) =>{

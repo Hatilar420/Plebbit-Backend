@@ -20,11 +20,16 @@ const SocketHub = (socket,io) =>{
           Score : 0
         }
         let result = await _gameScoreServices.CreateGameAsync(obj)
+        let GamePlayers = await _gameService.GetGamePlayersAsync(roomId)
+        //let pilayer = await _gameService.GetGamePlayerAsync(userMap)
         io.to(socket.id).emit("GameId" , result.Game)
+        io.to(roomId).emit("Players",{
+          Players : GamePlayers
+        })
         io.to(socket.id).emit("turn" , {
           Gameid : await  _gameService.GetPlayerTurn(roomId)
         })
-        io.to(roomId).emit("Joined")
+        //socket.to(roomId).emit("Joined",pilayer)
       })
 
       socket.on("disconnect", () =>{
@@ -38,7 +43,7 @@ const SocketHub = (socket,io) =>{
       })
 
       socket.on("grp" , async ({gid , message,GameScoreId}) =>{
-        await _gameService.CheckGameWordAsync(gid,GameScoreId._id,message.Text)
+        await _gameService.CheckGameWordAsync(gid,GameScoreId._id,message.Text,io)
         io.to(gid).emit("message" , {message})
       })
 
