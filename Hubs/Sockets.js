@@ -7,6 +7,12 @@ const SocketHub = (socket,io) =>{
     socket.on("join" , async({roomId,userMap}) =>{
         //console.log(roomId)
         //console.log(userMap)
+        if(await _gameService.IsGameOverAsync(roomId)){
+          io.to(socket.id).emit("GameOver" , {
+            Gameid : roomId
+          })
+          return 
+        }
         socket.join(roomId)
         let obj = {
           GameId : roomId,
@@ -21,6 +27,11 @@ const SocketHub = (socket,io) =>{
         io.to(roomId).emit("Joined")
       })
 
+      socket.on("disconnect", () =>{
+
+        console.log("Disconnected", socket.id)
+
+      })
 
       socket.on("TimerUpdate" , ({Gid,timeLeft}) =>{
           socket.to(Gid).emit("timer" ,{timeLeft})
@@ -33,9 +44,19 @@ const SocketHub = (socket,io) =>{
 
       socket.on("updateTurn" , async ({GameID}) =>{
           let result = await _gameService.UpdateTurnAsync(GameID)
-          io.to(GameID).emit("turn" , {
-            Gameid : result
-          })
+          if(!result.isGameOver)
+          {
+            //console.log("not over",result)
+              io.to(GameID).emit("turn" , {
+                Gameid : result.Player
+              })
+          }
+          else if(result.isGameOver){
+            //console.log("game over")
+              io.to(GameID).emit("GameOver" , {
+                Gameid : GameID
+              })
+          }
       })
 
       socket.on("painting" , ({gid,data}) =>{

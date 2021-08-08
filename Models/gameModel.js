@@ -24,6 +24,14 @@ let GameModelSchema = new Schema({
     SelectedPlayer : {
         type:Number, 
         default: 0
+    },
+    Turns : {
+        type:Number,
+        default:5
+    },
+    OnTurn : {
+        type:Number,
+        default : 0
     }
 })
 

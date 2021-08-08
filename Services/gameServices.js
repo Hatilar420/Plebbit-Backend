@@ -24,7 +24,7 @@ class gameServices {
     UpdateGameOver = async(gameId)=>{
         try{
             let game  = await this.GetGamesByGameId(gameId)
-            if(game !=null){
+            if(game !=null ){
                 game.GameOver = true
             }
             else {
@@ -45,10 +45,21 @@ class gameServices {
         let game  = await this.GetGameByGameId(GameId)
         let selected = (game.SelectedPlayer + 1) % (playerList.length)
         game.SelectedPlayer = selected
+        if(selected == 0){
+            if(game.OnTurn >= game.Turns){
+                //await this.UpdateGameOver(GameId)
+                game.GameOver = true
+                await _gameContext.findByIdAndUpdate(GameId , {
+                    $set : game
+                })
+                return {Player:null , isGameOver : true}
+            }
+            game.OnTurn += 1
+        } 
         await _gameContext.findByIdAndUpdate(GameId , {
             $set : game
         })
-        return playerList[selected]._id
+        return {Player : playerList[selected]._id, isGameOver :  false}
         
      }
 
@@ -84,6 +95,11 @@ class gameServices {
         let playerList =  await _gameScoreService.GetGameScoreByGameId(GameId)
         let game  = await this.GetGameByGameId(GameId)
         return playerList[game.SelectedPlayer]._id
+    }
+
+    IsGameOverAsync = async (GameId) =>{
+        let result = await _gameContext.findById(GameId)
+        return result.GameOver
     }
 
     //Manipulations
