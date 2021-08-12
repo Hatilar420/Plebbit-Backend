@@ -1,5 +1,6 @@
 const _gameScoreServices  = require('../Services/gameScoreServices')
 const _gameService = require('../Services/gameServices')
+const {SchedueleJob,StopJob} = require('../Services/ToadTimerService')
 
 const SocketHub = (socket,io) =>{
 
@@ -38,16 +39,18 @@ const SocketHub = (socket,io) =>{
 
       })
 
-      socket.on("TimerUpdate" , ({Gid,timeLeft}) =>{
+      //DEPRECIATED
+      /*socket.on("TimerUpdate" , ({Gid,timeLeft}) =>{
           socket.to(Gid).emit("timer" ,{timeLeft})
-      })
+      })*/
 
       socket.on("grp" , async ({gid , message,GameScoreId}) =>{
         await _gameService.CheckGameWordAsync(gid,GameScoreId._id,message.Text,io)
         io.to(gid).emit("message" , {message})
       })
 
-      socket.on("updateTurn" , async ({GameID}) =>{
+      //DEPRICIATED
+      /*socket.on("updateTurn" , async ({GameID}) =>{
           let result = await _gameService.UpdateTurnAsync(GameID)
           if(!result.isGameOver)
           {
@@ -62,13 +65,15 @@ const SocketHub = (socket,io) =>{
                 Gameid : GameID
               })
           }
-      })
+      })*/
 
       socket.on("painting" , ({gid,data}) =>{
           socket.to(gid).emit("canvasData" ,{data})
       })
 
       socket.on("UpdateWord", async ({gid,word}) =>{
+          StopJob(`Select_${gid}`)
+          SchedueleJob(io,gid)
           let result = await _gameService.UpdateWordAsync(gid,word)
           if(result !=  null){
             socket.to(gid).emit("WordUpdate" , {word})
