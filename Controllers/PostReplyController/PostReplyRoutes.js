@@ -17,7 +17,7 @@ router.post("/",async (req,res) =>{
     let userId =  JwtDecodeResult.User._id
     try{
         let result = await _PostReplyService.CreatePostFromRequestAsync(req.body,userId)
-        console.log(result)
+        //console.log(result)
         if(result.IsSuccess){
             res.status(201).send({
                 CreatedRoute : `reply/s/${result.user._id}`

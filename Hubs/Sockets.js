@@ -21,20 +21,20 @@ const SocketHub = (socket,io) =>{
           Score : 0
         }
         let result = await _gameScoreServices.CreateGameAsync(obj)
+        socket.GameScoreId =  result.Game._id
         let GamePlayers = await _gameService.GetGamePlayersAsync(roomId)
-        //let pilayer = await _gameService.GetGamePlayerAsync(userMap)
         io.to(socket.id).emit("GameId" , result.Game)
+        await _gameScoreServices.UpdateIsOnline(result.Game._id , true)
         io.to(roomId).emit("Players",{
           Players : GamePlayers
         })
         io.to(socket.id).emit("turn" , {
           Gameid : await  _gameService.GetPlayerTurn(roomId)
         })
-        //socket.to(roomId).emit("Joined",pilayer)
       })
 
       socket.on("disconnect", () =>{
-
+        _gameScoreServices.UpdateIsOnline(socket.GameScoreId,false)
         console.log("Disconnected", socket.id)
 
       })

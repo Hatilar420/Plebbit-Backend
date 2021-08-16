@@ -19,7 +19,7 @@ router.post("/",CheckGroupMiddleware,async (req,res) =>{
     let userId =  JwtDecodeResult.User._id
     try{
         let result = await _PostService.CreatePostFromRequestAsync(req.body,userId)
-        console.log(result)
+        //console.log(result)
         if(result.IsSuccess){
             res.status(201).send({
                 CreatedRoute : `post/${result.user._id}`
@@ -44,7 +44,7 @@ router.post("/p/",PostUploadFile.single('image'),CheckGroupMiddleware,async (req
     let userId =  JwtDecodeResult.User._id
     try{
         let result = await _PostService.CreatePostWithImageAsync(req.body,req.file,userId)
-        console.log(result)
+        //console.log(result)
         if(result.IsSuccess){
             res.status(201).send({
                 CreatedRoute : `post/${result.user._id}`
@@ -69,9 +69,9 @@ router.post("/p/",PostUploadFile.single('image'),CheckGroupMiddleware,async (req
 router.get('/user',async (req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
     let userId =  JwtDecodeResult.User._id
-    console.log(userId)
+    //console.log(userId)
     let GetPosts = await _PostService.GetPostByUserId(userId)
-    console.log(GetPosts)
+    //console.log(GetPosts)
     if(GetPosts != null)
     {
         res.status(200).send(GetPosts)
@@ -128,7 +128,7 @@ router.delete('/:id',async(req,res) =>{
     let JwtDecodeResult = await _UserService.VerifyUserAndGetUserAsync(req)
     let userId =  JwtDecodeResult.User._id
     let result = await _PostService.DeleteByIdAsync(postId,userId)
-    console.log(result)
+    //console.log(result)
     if(result.IsSuccess){
         res.status(200).send({
             Deleted : `post/${postId}`

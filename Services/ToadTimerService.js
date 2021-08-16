@@ -15,7 +15,7 @@ const SchedueleJob = (Socket , Gid) =>{
                 {
                     //console.log("not over",result)
                     Socket.to(Gid).emit("turn" , {
-                        Gameid : result.Player
+                        Gameid : result.Player._id
                     })
                     WordSelectTImer(Socket,Gid)
                 }
@@ -48,7 +48,7 @@ const WordSelectTImer = (Socket,gid) =>{
                 {
                     //console.log("not over",result)
                     Socket.to(gid).emit("turn" , {
-                        Gameid : result.Player
+                        Gameid : result.Player._id
                     })
                     WordSelectTImer(Socket,gid)
                 }

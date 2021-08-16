@@ -44,11 +44,35 @@ class gameServices {
     UpdateTurnAsync = async (GameId) =>{
         let playerList =  await _gameScoreService.GetGameScoreByGameId(GameId)
         let game  = await this.GetGameByGameId(GameId)
+
         let selected = (game.SelectedPlayer + 1) % (playerList.length)
+
+        
+        //if selected Player is offline it will iterate until next selected online player is found
+        // if no selected online player is found turn flag is triggered which is currently hard coded at 100
+        //And it sets the game to gameover
+
+        if(!playerList[selected].isOnline){
+            let turns = 0 
+            while(!playerList[selected].isOnline && turns <= 100){
+                selected = (selected + 1) % (playerList.length)
+                turns++
+            }
+            if(turns >= 100){
+                console.log("Terminating game for no response")
+                game.GameOver = true
+                await _gameContext.findByIdAndUpdate(GameId , {
+                    $set : game
+                })
+                return {Player:null,isGameOver : true}
+            }
+        }
+
         game.SelectedPlayer = selected
+
+
         if(selected == 0){
             if(game.OnTurn >= game.Turns){
-                //await this.UpdateGameOver(GameId)
                 game.GameOver = true
                 await _gameContext.findByIdAndUpdate(GameId , {
                     $set : game
@@ -60,7 +84,7 @@ class gameServices {
         await _gameContext.findByIdAndUpdate(GameId , {
             $set : game
         })
-        return {Player : playerList[selected]._id, isGameOver :  false}
+        return {Player : playerList[selected], isGameOver :  false}
         
      }
 

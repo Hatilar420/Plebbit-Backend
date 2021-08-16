@@ -45,6 +45,29 @@ class gameScoreServices {
         }
 
     }
+
+
+    UpdateIsOnline = async (_id,status) =>{
+        try{
+            let ScoreMod = await _gameScoreContext.findById(_id)
+            if(ScoreMod){
+                ScoreMod.isOnline = status
+                await _gameScoreContext.findByIdAndUpdate(ScoreMod._id,{
+                    $set : ScoreMod
+                })
+                return 1
+            }else{
+                console.log("Score not found")
+                return -1
+            }
+        }catch(error){
+            console.log(error)
+            return -1
+        }
+
+    }
+
+
     //Get
 
     GetGameScoreByid =  async (_id) =>{

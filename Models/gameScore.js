@@ -17,6 +17,10 @@ let GameScoreSchema = new Schema({
     Score : {
         type: Number,
         required:true
+    },
+    isOnline : {
+        type : Boolean, 
+        default:false
     }
 })
 
