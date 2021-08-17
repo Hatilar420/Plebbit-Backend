@@ -71,6 +71,14 @@ const SocketHub = (socket,io) =>{
           socket.to(gid).emit("canvasData" ,{data})
       })
 
+
+      socket.on("clear",({gid,data}) =>{
+
+        socket.to(gid).emit("clearImage",{data})
+
+      })
+
+
       socket.on("UpdateWord", async ({gid,word}) =>{
           StopJob(`Select_${gid}`)
           SchedueleJob(io,gid)
