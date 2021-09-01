@@ -1,5 +1,6 @@
 const redis = require("redis");
 const client = redis.createClient(6379);
+const { promisify } = require('util');
 
 client.on("error" , (error) =>{
     console.log(error)
@@ -39,6 +40,36 @@ const IncrementCounter = (Gid,EndTime,cb) =>{
 }
 
 
+const RegisterPeerId = (gid,playerId,peerId) =>{
+
+    client.setex(`PeerId_${gid}_${playerId}` ,3600,peerId )
+
+}
+
+const GetPeerId = (gid,playerId , cb) =>{
+
+    client.get( `PeerId_${gid}_${playerId}` , (error,data) =>{
+
+        if(error || data == null){
+            console.log(playerId,error)
+            cb(null)
+        }else{
+            //console.log(playerId,data)
+            cb(data)
+        }
+
+    } )
+}
+
+const GetPeerIdAsync = async (gid, playerId ) =>{
+
+    const getAsync = promisify(client.get).bind(client);
+    const value = await getAsync(`PeerId_${gid}_${playerId}`);
+    //console.log(playerId,value)
+    return value
+
+}
+
 const GetCounterSeconds = (gid) =>{
     let Data = null
     client.get(gid, (error,data) =>{
@@ -53,4 +84,4 @@ const GetCounterSeconds = (gid) =>{
     return data
 }
 
-module.exports = {IncrementCounter,GetCounterSeconds}
+module.exports = {IncrementCounter,GetCounterSeconds,RegisterPeerId,GetPeerId,GetPeerIdAsync}

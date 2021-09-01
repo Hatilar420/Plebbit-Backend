@@ -135,6 +135,7 @@ class gameServices {
             let res =  await _groupMapServices.GetGroupByIdAsync(x.GroupMap)
             //console.log(res.UserId)
             let obj = {
+                isOnline:x.isOnline,
                 GameScoreId : x._id ,
                 score:x.Score,
                 User:res.UserId

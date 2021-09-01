@@ -1,6 +1,7 @@
 const _gameScoreServices  = require('../Services/gameScoreServices')
 const _gameService = require('../Services/gameServices')
 const {SchedueleJob,StopJob} = require('../Services/ToadTimerService')
+const {RegisterPeerId, GetPeerIdAsync} = require('../Services/RedisService')
 
 const SocketHub = (socket,io) =>{
 
@@ -21,10 +22,10 @@ const SocketHub = (socket,io) =>{
           Score : 0
         }
         let result = await _gameScoreServices.CreateGameAsync(obj)
+        await _gameScoreServices.UpdateIsOnline(result.Game._id , true)
         socket.GameScoreId =  result.Game._id
         let GamePlayers = await _gameService.GetGamePlayersAsync(roomId)
         io.to(socket.id).emit("GameId" , result.Game)
-        await _gameScoreServices.UpdateIsOnline(result.Game._id , true)
         io.to(roomId).emit("Players",{
           Players : GamePlayers
         })
@@ -76,6 +77,27 @@ const SocketHub = (socket,io) =>{
 
         socket.to(gid).emit("clearImage",{data})
 
+      })
+
+      socket.on("PeerId" , ({PlayerId,gid,peerId}) =>{
+        //console.log(PlayerId,gid,peerId)
+        socket.to(gid).emit("PlayerPeerId" , {
+          PlayerId,
+          peerId
+        })
+        RegisterPeerId(gid,PlayerId,peerId)
+      })
+
+      socket.on("getPeers" , async ({Players , gid}) =>{
+        //console.log(obj)
+        for(var i of Players){
+           let result = await GetPeerIdAsync(gid,i.GameId)
+           socket.emit("PeerResult", {
+            peerId:result , 
+            GameId:i.GameId
+          })
+        }
+              
       })
 
 
