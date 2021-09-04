@@ -84,4 +84,18 @@ const GetCounterSeconds = (gid) =>{
     return data
 }
 
-module.exports = {IncrementCounter,GetCounterSeconds,RegisterPeerId,GetPeerId,GetPeerIdAsync}
+const DeletePeerId = (gid,playerId) =>{
+    try{
+        DeleteKey(`PeerId_${gid}_${playerId}`)
+    }catch(err){
+        console.log(err)
+    }
+    
+}
+
+const DeleteKey = (key) =>{
+
+    client.del(key)
+}
+
+module.exports = {IncrementCounter,GetCounterSeconds,RegisterPeerId,GetPeerId,GetPeerIdAsync,DeletePeerId}

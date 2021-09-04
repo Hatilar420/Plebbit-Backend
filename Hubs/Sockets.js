@@ -1,7 +1,7 @@
 const _gameScoreServices  = require('../Services/gameScoreServices')
 const _gameService = require('../Services/gameServices')
 const {SchedueleJob,StopJob} = require('../Services/ToadTimerService')
-const {RegisterPeerId, GetPeerIdAsync} = require('../Services/RedisService')
+const {RegisterPeerId, GetPeerIdAsync,DeletePeerId} = require('../Services/RedisService')
 
 const SocketHub = (socket,io) =>{
 
@@ -24,6 +24,7 @@ const SocketHub = (socket,io) =>{
         let result = await _gameScoreServices.CreateGameAsync(obj)
         await _gameScoreServices.UpdateIsOnline(result.Game._id , true)
         socket.GameScoreId =  result.Game._id
+        socket.GameId = roomId
         let GamePlayers = await _gameService.GetGamePlayersAsync(roomId)
         io.to(socket.id).emit("GameId" , result.Game)
         io.to(roomId).emit("Players",{
@@ -36,6 +37,10 @@ const SocketHub = (socket,io) =>{
 
       socket.on("disconnect", () =>{
         _gameScoreServices.UpdateIsOnline(socket.GameScoreId,false)
+        socket.to(socket.GameId).emit("PlayerOffline",{
+          PlayerId : socket.GameScoreId
+        })
+        DeletePeerId(socket.GameId,socket.GameScoreId)        
         console.log("Disconnected", socket.id)
 
       })
